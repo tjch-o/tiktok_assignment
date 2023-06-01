@@ -62,11 +62,14 @@ func (s *IMServiceImpl) Send(ctx context.Context, req *rpc.SendRequest) (*rpc.Se
 		Timestamp: timestamp,
 	}
 
-	roomID := getRoomID(req.Message.GetChat())
-
-	err := rdb.SaveMessage(ctx, roomID, message)
+	roomID, err := getRoomID(req.Message.GetChat())
 	if err != nil {
 		return nil, err
+	}
+
+	err_2 := rdb.SaveMessage(ctx, roomID, message)
+	if err_2 != nil {
+		return nil, err_2
 	}
 
 	resp := rpc.NewSendResponse()
